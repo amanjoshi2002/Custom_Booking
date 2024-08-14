@@ -6,20 +6,12 @@ import Toast from '../components/Toast';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useStyles } from '../contexts/StyleContext';
 import { useSession } from "next-auth/react";
-
-interface IStyle {
-  backgroundColor: string;
-  textColor: string;
-  buttonColor: string;
-  logoColor: string;
-  hoverColor: string;
-  logoname: string;
-}
+import { StyleType } from '../interface/styles';
 
 const Form: React.FC = () => {
   const { styles: currentStyles, setStyles } = useStyles();
   const { data: session } = useSession();
-  const [style, setStyle] = useState<IStyle>({
+  const [style, setStyle] = useState<StyleType>({
     backgroundColor: '',
     textColor: '',
     buttonColor: '',
@@ -33,10 +25,10 @@ const Form: React.FC = () => {
   useEffect(() => {
     const filteredStyles = Object.keys(style).reduce((acc, key) => {
       if (key in currentStyles) {
-        acc[key as keyof IStyle] = currentStyles[key as keyof typeof currentStyles];
+        acc[key as keyof StyleType] = currentStyles[key as keyof typeof currentStyles];
       }
       return acc;
-    }, {} as IStyle);
+    }, {} as StyleType);
     
     setStyle(filteredStyles);
   }, [currentStyles]);
