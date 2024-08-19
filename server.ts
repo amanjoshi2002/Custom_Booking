@@ -6,6 +6,7 @@ import next from 'next';
 import { MongoClient } from 'mongodb';
 import webpush from 'web-push';
 import mongoose, { Document, Model } from 'mongoose';
+import { hash } from 'bcrypt';
 
 // Load environment variables from .env.local
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
@@ -230,6 +231,35 @@ connectToMongoDB().then(({ mongoose, client }) => {
       } catch (error) {
         console.error('Error in GET /api/getStyle:', error);
         res.status(500).json({ error: 'Error retrieving style', details: (error as Error).message });
+      }
+    });
+
+    // Add the POST route for user signup
+    app.post('/api/auth/signup', async (req, res) => {
+      try {
+        const { email, password, phone } = req.body;
+
+        // Check if user already exists
+        const existingUser = await db.collection('users').findOne({ email });
+        if (existingUser) {
+          return res.status(400).json({ error: 'User already exists' });
+        }
+
+        // Hash the password
+        const hashedPassword = await hash(password, 10);
+
+        // Insert the new user
+        const result = await db.collection('users').insertOne({
+          email,
+          password: hashedPassword,
+          phone,
+        });
+
+        // Return success response
+        res.status(201).json({ message: 'User created successfully', userId: result.insertedId });
+      } catch (error) {
+        console.error('Signup error:', error);
+        res.status(500).json({ error: 'An error occurred during signup' });
       }
     });
 

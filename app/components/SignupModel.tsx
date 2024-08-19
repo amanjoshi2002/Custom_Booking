@@ -52,8 +52,8 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
 
   // Render signup modal
   return (
-    <div className={`fixed inset-0 ${styles.backgroundColor} bg-opacity-50 flex items-center justify-center p-4 z-50`}>
-      <div className="bg-white p-6 rounded-lg max-w-md w-full" style={{ backgroundColor: styles.backgroundColor, color: styles.textColor }}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-black text-white p-6 rounded-lg max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4">Sign up</h2>
         <form onSubmit={handleSignup}>
           {/* Email input */}
@@ -64,7 +64,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
               id="email"
               value={signupEmail}
               onChange={(e) => setSignupEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border rounded-lg text-black"
               style={{ borderColor: styles.buttonColor }}
               required
             />
@@ -77,7 +77,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
               id="password"
               value={signupPassword}
               onChange={(e) => setSignupPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border rounded-lg text-black"
               style={{ borderColor: styles.buttonColor }}
               required
             />
@@ -90,7 +90,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
               id="confirmPassword"
               value={signupConfirmPassword}
               onChange={(e) => setSignupConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border rounded-lg text-black"
               style={{ borderColor: styles.buttonColor }}
               required
             />
@@ -103,7 +103,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
               id="phone"
               value={signupPhone}
               onChange={(e) => setSignupPhone(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border rounded-lg text-black"
               style={{ borderColor: styles.buttonColor }}
               required
             />
@@ -112,16 +112,16 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
           <div className="flex justify-end space-x-4">
             <button
               type="button"
-              style={{ backgroundColor: styles.buttonColor, color: styles.textColor }}
-              className="px-4 py-2 rounded"
+              style={{ backgroundColor: styles.buttonColor }}
+              className="px-4 py-2 rounded text-white"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              style={{ backgroundColor: styles.buttonColor, color: styles.textColor }}
-              className="px-4 py-2 rounded"
+              style={{ backgroundColor: styles.buttonColor }}
+              className="px-4 py-2 rounded text-white"
             >
               Sign up
             </button>
