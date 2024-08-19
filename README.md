@@ -176,21 +176,73 @@ Custom_Booking is a comprehensive booking management system built with Next.js, 
 
 ## 🚀 Main Components
 
-1. `BookingsPage`: Displays a list of user bookings with sorting options.
-2. `BookingDetailPage`: Shows detailed information for a single booking, with options to edit and cancel.
-3. `ServicesPage`: Displays a list of available services with search and filter functionality.
-4. `ServiceDetailPage`: Shows detailed information for a single service, allowing users to book the service.
-5. `NavBar`: Navigation component for the application.
-6. `Footer`: Footer component for the application.
-7. `Loading`: Loading indicator component.
+1. `ClientSessionProvider`: Manages client-side session state.
+2. `NavBar`: Navigation component for the application.
+3. `Footer`: Footer component for the application.
+4. `HomeService`: Displays available home services on the main page.
+5. `Loading` and `LoadingOverlay`: Loading indicator components.
+6. `LoginModal` and `SignupModal`: Components for user authentication.
+7. `ServiceImages`: Displays images related to services.
+8. `Toast`: Notification component for user feedback.
+9. `CancelButton`: Component for cancelling bookings.
+10. `Providers`: Wraps the application with necessary context providers.
+11. `StyleContext`: Manages global style settings and updates.
 
 ## 🛣️ API Routes
 
 - `/api/auth/[...nextauth]`: Handles authentication using NextAuth.js.
 - `/api/auth/signup`: Handles user registration.
-- `/api/bookings`: Handles fetching and creating bookings.
-- `/api/bookings/[id]`: Handles fetching, updating, and cancelling individual bookings.
-- `/api/services`: Handles fetching and creating services.
+- `/api/bookings`: Manages booking operations (GET, POST).
+- `/api/bookings/[id]`: Handles operations for specific bookings (GET, PUT, DELETE).
+- `/api/services`: Manages service-related operations.
+- `/api/getStyle`: Retrieves current style settings.
+- `/api/saveStyle`: Saves updated style settings and triggers push notifications.
+- `/api/subscribe`: Handles push notification subscriptions.
+
+## 📄 Pages
+
+- `/`: Home page (`app/page.tsx`)
+- `/about`: About page (`app/about/page.tsx`)
+- `/bookings`: Bookings list page (`app/bookings/page.tsx`)
+- `/bookings/[id]`: Individual booking page (`app/bookings/[id]/page.tsx`)
+- `/services`: Services page (`app/services/page.tsx`)
+- `/settings`: Settings page for customizing website style (`app/settings/page.tsx`)
+- `/contact_us`: Contact page (`app/contact_us/page.tsx`)
+
+## 🎨 Style Customization and Push Notifications
+
+The Custom_Booking project features a unique style customization system:
+
+1. **Settings Page**: Users can customize the website's appearance through the `/settings` page.
+
+2. **Real-time Updates**: When a user changes the style settings, the changes are immediately applied to their view.
+
+3. **Push Notifications**: The system uses a push notification mechanism to inform all connected clients about style changes.
+
+4. **Global Style Application**: Upon receiving a push notification, all clients update their styles in real-time, ensuring a consistent look across all active sessions.
+
+5. **StyleContext**: The `StyleContext` manages the global style state and provides methods to update it across the application.
+
+This feature allows for dynamic, user-driven customization of the website's appearance, with changes reflected instantly across all active users.
+
+## 🧩 Context Providers
+
+- `StyleContext`: Manages global style settings and provides methods for updating them (`app/contexts/StyleContext.tsx`)
+
+## 🗃️ Models and Interfaces
+
+- `Booking`: Defines the structure for booking data (`app/interface/booking.ts`)
+- `Service`: Defines the structure for service data (`app/interface/model/Service.ts`)
+- `Style`: Defines the structure for style settings (`app/interface/model/Style.ts`)
+
+## 🔧 Utility Files
+
+- `routes.ts`: Defines application routes
+- `mongodb.ts`: Handles MongoDB connection (`lib/mongodb.ts`)
+- `service-worker.js`: Manages service worker for push notifications (`public/service-worker.js`)
+- `generate-vapid-keys.js`: Generates VAPID keys for push notifications
+
+This structure provides a comprehensive overview of your Custom_Booking project, highlighting the main components, API routes, pages, and the unique style customization feature with push notifications.
 
 ## Push Notification System
 
