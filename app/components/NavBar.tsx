@@ -95,18 +95,18 @@ function NavBar() {
 
   return (
     <>
-      <Navbar className="navbar hidden lg:flex" style={{
+      <Navbar className="navbar hidden lg:flex py-4" style={{
         backgroundColor: styles.backgroundColor,
         color: styles.textColor
       }}>
         <Navbar.Start>
           <Dropdown>
-            <Button tag="label" color="ghost" shape="circle" tabIndex={0}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <Button tag="label" color="ghost" shape="circle" tabIndex={0} className="btn-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
               </svg>
             </Button>
-            <Dropdown.Menu className="menu-sm w-52 mt-3 z-[1]" style={{
+            <Dropdown.Menu className="menu-lg w-64 mt-3 z-[1]" style={{
               backgroundColor: styles.backgroundColor,
               color: styles.textColor
             }}>
@@ -124,29 +124,29 @@ function NavBar() {
         </Navbar.Start>
         <Navbar.Center>
           <Link href={PAGE_ROUTES.HOME}>
-            <Button tag="a" color="ghost" className="normal-case text-xl">
-              <img src="/photo/door.svg" alt="Door" className="logo inline-block h-5 w-5 mr-2" />
+            <Button tag="a" color="ghost" className="normal-case text-3xl">
+              <img src="/photo/door.svg" alt="Door" className="logo inline-block h-8 w-8 mr-3" />
               {styles.logoname}
             </Button>
           </Link>
         </Navbar.Center>
         <Navbar.End className="navbar-end">
-          <Button color="ghost" shape="circle" onClick={toggleVisible}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <Button color="ghost" shape="circle" onClick={toggleVisible} className="btn-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </Button>
           <Link href={PAGE_ROUTES.BOOKINGS} onClick={handleBookingsClick}>
-            <Button color="ghost" shape="circle">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <Button color="ghost" shape="circle" className="btn-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.4 5M17 13l1.4 5M9 21h6M9 21a2 2 11-4 0M15 21a2 2 104 0" />
               </svg>
             </Button>
           </Link>
           {status === 'authenticated' ? (
             <div className="relative">
-              <Button color="ghost" shape="circle" onClick={toggleSettingsDropdown}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <Button color="ghost" shape="circle" onClick={toggleSettingsDropdown} className="btn-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -171,7 +171,7 @@ function NavBar() {
               )}
             </div>
           ) : (
-            <button onClick={handleShowLoginModal} className="bg-transparent hover:bg-opacity-20 hover:bg-gray-700 text-white font-semibold py-2 px-4 mr-2 focus:outline-none border-0">
+            <button onClick={handleShowLoginModal} className="bg-transparent hover:bg-opacity-20 hover:bg-gray-700 text-white font-semibold py-3 px-6 mr-2 focus:outline-none border-0 text-xl">
               Login
             </button>
           )}

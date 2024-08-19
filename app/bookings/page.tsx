@@ -152,12 +152,11 @@ export default function BookingsPage() {
       <NavBar />
       <div className="container mx-auto mt-8 px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold" style={{ color: styles.textColor }}>My Bookings</h1>
+          <h1 className="text-3xl font-bold text-black">My Bookings</h1>
           <select
-            className="border rounded px-2 py-1"
+            className="border rounded px-2 py-1 text-black"
             value={sortOption}
             onChange={(e) => sortBookings(e.target.value as SortOption)}
-            style={{ color: styles.textColor }}
           >
             <option value="dateDesc">Date (Newest First)</option>
             <option value="dateAsc">Date (Oldest First)</option>
@@ -166,7 +165,7 @@ export default function BookingsPage() {
           </select>
         </div>
         {bookings.length === 0 ? (
-          <p style={{ color: styles.textColor }}>You have no bookings.</p>
+          <p className="text-black">You have no bookings.</p>
         ) : (
           <>
             <ul className="space-y-4">
@@ -175,9 +174,9 @@ export default function BookingsPage() {
                   <Link href={`/bookings/${booking._id.toString()}`}>
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="text-lg font-semibold" style={{ color: styles.textColor }}>{booking.serviceName}</h3>
-                        <p className="text-sm" style={{ color: styles.textColor }}>Date: {new Date(booking.dateTime).toLocaleString()}</p>
-                        <p className="text-sm" style={{ color: styles.textColor }}>Cost: ${booking.cost.toFixed(2)}</p>
+                        <h3 className="text-lg font-semibold text-black">{booking.serviceName}</h3>
+                        <p className="text-sm text-black">Date: {new Date(booking.dateTime).toLocaleString()}</p>
+                        <p className="text-sm text-black">Cost: ${booking.cost.toFixed(2)}</p>
                       </div>
                       <div>
                         <span className={`px-2 py-1 rounded-full text-sm ${getStatusColor(booking.status)}`}>
@@ -198,7 +197,6 @@ export default function BookingsPage() {
                 </li>
               ))}
             </ul>
-            {/* Pagination component */}
             <div className="mt-4 flex justify-center">
               <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                 <button
