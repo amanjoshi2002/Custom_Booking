@@ -248,7 +248,97 @@ This structure provides a comprehensive overview of your Custom_Booking project,
 
 Our project implements a real-time push notification system to keep users informed about style updates across the application. This system ensures that all connected clients receive instant updates when global styles are changed.
 
-[... Keep the existing Push Notification System section ...]
+### Key Components
+
+1. **Server-Side Setup**
+   The server uses the `web-push` library to handle push notifications:
+
+   ```typescript
+   const webpush = require('web-push');
+
+   const vapidDetails = {
+     subject: 'mailto:your-email@example.com',
+     publicKey: 'YOUR_PUBLIC_VAPID_KEY',
+     privateKey: 'YOUR_PRIVATE_VAPID_KEY'
+   };
+
+   webpush.setVapidDetails(
+     vapidDetails.subject,
+     vapidDetails.publicKey,
+     vapidDetails.privateKey
+   );
+   ```
+
+2. **Client-Side Subscription**
+   When a user visits the site, their browser subscribes to push notifications:
+
+   ```typescript
+   if ('serviceWorker' in navigator && 'PushManager' in window) {
+     const registration = await navigator.serviceWorker.register('/service-worker.js');
+     const subscription = await registration.pushManager.subscribe({
+       userVisibleOnly: true,
+       applicationServerKey: vapidPublicKey
+     });
+     
+     await fetch('/api/subscribe', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(subscription)
+     });
+   }
+   ```
+
+3. **Sending Notifications**
+   When styles are updated, the server sends notifications to all subscribed clients:
+
+   ```typescript
+   const subscriptions = await db.collection('pushSubscriptions').find({}).toArray();
+   for (const subscription of subscriptions) {
+     try {
+       await webpush.sendNotification(subscription, JSON.stringify({
+         title: 'Style Update',
+         body: 'The website style has been updated.',
+         data: updatedStyles
+       }));
+     } catch (error) {
+       console.error('Error sending push notification:', error);
+     }
+   }
+   ```
+
+4. **Service Worker**
+   The service worker (`public/service-worker.js`) handles incoming push events:
+
+   ```typescript
+   self.addEventListener('push', function(event) {
+     const data = event.data.json();
+     self.registration.showNotification(data.title, {
+       body: data.body,
+       data: data.data
+     });
+   });
+   ```
+
+5. **Client-Side Handling**
+   The main application listens for messages from the service worker:
+
+   ```typescript
+   navigator.serviceWorker.addEventListener('message', (event) => {
+     if (event.data && event.data.type === 'STYLE_UPDATE') {
+       updateStyles(event.data.styles);
+     }
+   });
+   ```
+
+### How It Works
+
+1. Users subscribe to push notifications on their first visit.
+2. When styles are updated (e.g., in the settings page), the server saves the new styles and sends push notifications to all subscribed clients.
+3. The service worker receives the push event, shows a notification, and sends a message to the client.
+4. The client receives the message and updates the styles in real-time.
+
+This system enables instant style updates across all
+
 
 ## 🏁 Getting Started
 
