@@ -5,7 +5,7 @@
     <h1 align="center">CUSTOM_BOOKING</h1>
 </p>
 <p align="center">
-    <em>A comprehensive booking management system built with Next.js, React, and Socket.IO</em>
+    <em>A comprehensive booking management system built with Next.js, React, and Web Push Notification</em>
 </p>
 <p align="center">
 	<img src="https://img.shields.io/github/license/amanjoshi2002/Custom_Booking?style=flat&color=0080ff" alt="license">
