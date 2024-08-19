@@ -22,15 +22,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Suspense fallback={<LoadingPage />}>
-          <ClientSessionProvider>
-            <Providers>
-              <StyleProvider>
+        <ClientSessionProvider>
+          <Providers>
+            <StyleProvider>
+              <Suspense fallback={<LoadingPage />}>
                 {children}
-              </StyleProvider>
-            </Providers>
-          </ClientSessionProvider>
-        </Suspense>
+              </Suspense>
+            </StyleProvider>
+          </Providers>
+        </ClientSessionProvider>
       </body>
     </html>
   );

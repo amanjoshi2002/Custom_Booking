@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Navbar, Button, Input, Dropdown, Drawer, Menu } from 'react-daisyui';
 import Link from 'next/link';
 import { useSession, signOut } from "next-auth/react";
@@ -8,20 +8,16 @@ import { useRouter } from 'next/navigation';
 import LoginModal from './LoginModel';
 import SignupModal from './SignupModel';
 import { useStyles } from '../contexts/StyleContext';
-import { getStylesAsCSS } from './DefaultStyle';
 import Loading from './Loading';
-import { API_ROUTES, PAGE_ROUTES } from '../routes';
+import { PAGE_ROUTES } from '../routes';
 
-const defaultTheme = {
-  backgroundColor: '#000000', // Set default background color
-  textColor: '#FFFFFF',       // Set default text color
-  buttonColor: '#000000',     // Set default button color
-  logoColor: '#FFFFFF',       // Set default logo color
-  hoverColor: '#1F2937',      // Set default hover color
-};
+// Type guard function
+function isUserWithId(user: any): user is { id: string } {
+  return user && typeof user.id === 'string';
+}
 
 function NavBar() {
-  const { styles, setStyles, isLoading } = useStyles();
+  const { styles, isDefaultTheme, toggleTheme, isLoading } = useStyles();
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -31,7 +27,7 @@ function NavBar() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [settingsDropdownOpen, setSettingsDropdownOpen] = useState(false); // New state for dropdown
+  const [settingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
 
   const toggleVisible = useCallback(() => {
     setVisible(visible => !visible);
@@ -75,44 +71,23 @@ function NavBar() {
     setSettingsDropdownOpen(prev => !prev);
   };
 
-  const applyDefaultTheme = () => {
-    // Reset styles to default values
-    setStyles((prevStyles) => ({
-      ...prevStyles, // Preserve existing styles
-      ...defaultTheme, // Apply default theme styles
-    }));
-  };
-
-  useEffect(() => {
-    if (!isLoading) {
-      const styleElement = document.createElement('style');
-      styleElement.innerHTML = getStylesAsCSS(styles);
-      document.head.appendChild(styleElement);
-
-      // Set up service worker for push notifications
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then((registration) => {
-            console.log('Service Worker registered with scope:', registration.scope);
-          })
-          .catch((error) => {
-            console.error('Service Worker registration failed:', error);
-          });
-
-        // Listen for messages from the service worker
-        navigator.serviceWorker.addEventListener('message', (event) => {
-          if (event.data && event.data.type === 'STYLE_UPDATE') {
-            console.log('Received style update:', event.data.styles);
-            setStyles(event.data.styles);
-          }
-        });
-      }
-
-      return () => {
-        document.head.removeChild(styleElement);
-      };
+  const handleSaveAndApply = useCallback(async () => {
+    if (!session || !session.user) {
+      console.error('User not found in session');
+      // Handle the error appropriately, maybe show a message to the user
+      return;
     }
-  }, [styles, setStyles, isLoading]);
+
+    if (!isUserWithId(session.user)) {
+      console.error('User ID not found in session');
+      // Handle the error appropriately, maybe show a message to the user
+      return;
+    }
+
+    const userId = session.user.id;
+
+    // ... rest of the function using userId ...
+  }, [session, styles]);
 
   if (isLoading) {
     return <Loading />; 
@@ -176,15 +151,22 @@ function NavBar() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </Button>
-              {settingsDropdownOpen && ( // Dropdown menu
+              {settingsDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-10">
-                  <Link href={PAGE_ROUTES.SETTINGS}>
-                    <Button color="ghost" className="w-full text-left bg-gradient-to-r from-black to-gray-800 text-white mb-2">Style Configurator</Button>
-                  </Link>
-                  <Dropdown.Item>
-                    <Button color="ghost" onClick={applyDefaultTheme} className="w-full bg-gradient-to-r from-black to-gray-800 text-white mb-2">Default Theme</Button> {/* New button for default theme */}
-                  </Dropdown.Item>
-                  <Button color="ghost" className="w-full text-left bg-gradient-to-r from-black to-gray-800 text-white mb-2" onClick={() => signOut()}>Logout</Button>
+                  <Dropdown.Menu className="menu-sm w-full" style={{
+                    backgroundColor: styles.backgroundColor,
+                    color: styles.textColor
+                  }}>
+                    <Dropdown.Item>
+                      <Link href={PAGE_ROUTES.SETTINGS}>Style Configurator</Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={toggleTheme}>
+                      {isDefaultTheme ? 'User Theme' : 'Default Theme'}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => signOut()}>
+                      Logout
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
                 </div>
               )}
             </div>
@@ -228,15 +210,22 @@ function NavBar() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </Button>
-              {settingsDropdownOpen && ( // Dropdown menu
+              {settingsDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-10">
-                  <Link href={PAGE_ROUTES.SETTINGS}>
-                    <Button color="ghost" className="w-full text-left bg-gradient-to-r from-black to-gray-800 text-white space-y-1">Style Configurator</Button>
-                  </Link>
-                  <Dropdown.Item>
-                    <Button color="ghost" onClick={applyDefaultTheme} className="w-full bg-gradient-to-r from-black to-gray-800 text-white mb-2">Default Theme</Button> {/* New button for default theme */}
-                  </Dropdown.Item>
-                  <Button color="ghost" className="w-full text-left bg-gradient-to-r from-black to-gray-800 text-white mb-2" onClick={() => signOut()}>Logout</Button>
+                  <Dropdown.Menu className="menu-sm w-full" style={{
+                    backgroundColor: styles.backgroundColor,
+                    color: styles.textColor
+                  }}>
+                    <Dropdown.Item>
+                      <Link href={PAGE_ROUTES.SETTINGS}>Style Configurator</Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={toggleTheme}>
+                      {isDefaultTheme ? 'User Theme' : 'Default Theme'}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => signOut()}>
+                      Logout
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
                 </div>
               )}
             </div>
@@ -267,8 +256,7 @@ function NavBar() {
 
       <Drawer open={visible} onClickOverlay={toggleVisible} className="drawer-left" side={
         <Menu className="p-4 w-80 h-full">
-          <form onSubmit={handleSearch}>
-            <Menu.Item className="mb-4">
+          <form onSubmit={handleSearch}>            <Menu.Item className="mb-4">
               <Input 
                 placeholder="Search Services" 
                 className="w-full" 

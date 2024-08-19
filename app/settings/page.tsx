@@ -37,36 +37,37 @@ const Form: React.FC = () => {
     setStyle({ ...style, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!session) {
-      setToast({ message: 'User not authenticated', type: 'error' });
-      return;
+  const handleSaveAndApply = async () => {
+    if (!session?.user) {
+        setToast({ message: 'User not authenticated', type: 'error' });
+        return;
     }
     setIsSubmitting(true);
     try {
-      console.log('Submitting style:', style);
-      const response = await fetch('/api/saveStyle', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...style, userId: session?.user?.id ?? 'unknown' }),
-      });
+        console.log('Saving style:', style);
+        const response = await fetch('/api/saveStyle', { // Ensure this endpoint saves the style
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...style, userId: (session.user as any).id ?? session.user.email ?? 'unknown' }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-      const data = await response.json();
-      console.log('Style saved successfully:', data.message);
-      setStyles({ ...currentStyles, ...style });
-      setToast({ message: 'Style saved successfully', type: 'success' });
+        const data = await response.json();
+        console.log('Style saved successfully:', data.message);
+        setToast({ message: 'Style saved successfully', type: 'success' });
+
+        // Apply the new styles in real-time
+        setStyles({ ...currentStyles, ...style });
     } catch (error) {
-      console.error('Error saving style:', error);
-      setToast({ message: 'Error saving style', type: 'error' });
+        console.error('Error saving style:', error);
+        setToast({ message: 'Error saving style', type: 'error' });
     } finally {
-      setIsSubmitting(false);
+        setIsSubmitting(false);
     }
   };
 
@@ -74,7 +75,7 @@ const Form: React.FC = () => {
     <>  
       <Navbar />
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
+        <form onSubmit={(e) => e.preventDefault()} className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
           <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Style Configuration</h2>
           {Object.entries(style).map(([key, value]) => (
             <div key={key} className="mb-4">
@@ -100,11 +101,12 @@ const Form: React.FC = () => {
             </div>
           ))}
           <button 
-            type="submit" 
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+            type="button" 
+            className="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+            onClick={handleSaveAndApply} // Saves and applies the style
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Saving...' : 'Submit'}
+            {isSubmitting ? 'Saving...' : 'Save and Apply'}
           </button>
         </form>
       </div>

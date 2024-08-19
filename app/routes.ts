@@ -38,3 +38,10 @@ export const API_ROUTES = {
     SETTINGS: '/settings',
     SERVICES: '/services',
   };
+
+export const getUserTheme = async () => {
+  // Fetch the user theme from your API or local storage
+  const response = await fetch('/api/user-theme'); // Example API endpoint
+  const data = await response.json();
+  return data.styles; // Assuming the response contains the styles
+};

@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { ReactNode } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 // Define the structure of the style object
 export interface IStyle extends Document {
@@ -25,7 +26,7 @@ export interface StyleType {
 // Define the shape of the context value
 export interface StyleContextType {
   styles: StyleType;
-  setStyles: React.Dispatch<React.SetStateAction<StyleType>>;
+  setStyles: Dispatch<SetStateAction<StyleType>>;
   isLoading: boolean;
 }
 

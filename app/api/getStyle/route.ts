@@ -3,6 +3,8 @@ import { getDatabase } from '../../../lib/mongodb';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/options';
 
+export const dynamic = 'force-dynamic'; // Add this line
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
