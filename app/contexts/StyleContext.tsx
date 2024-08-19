@@ -22,10 +22,17 @@ export function StyleProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      const savedStyles = localStorage.getItem('userStyles');
-      if (savedStyles) {
-        setStyles(JSON.parse(savedStyles));
-        setIsDefaultTheme(false);
+      const savedThemePreference = localStorage.getItem('themePreference');
+      if (savedThemePreference === 'custom') {
+        const savedStyles = localStorage.getItem('userStyles');
+        if (savedStyles) {
+          setStyles(JSON.parse(savedStyles));
+          setIsDefaultTheme(false);
+        }
+      } else {
+        // If theme preference is 'default' or not set, use default theme
+        setStyles(defaultStyles);
+        setIsDefaultTheme(true);
       }
     }
     setIsLoading(false);
@@ -39,8 +46,10 @@ export function StyleProvider({ children }: { children: React.ReactNode }) {
       } else {
         localStorage.setItem('userStyles', JSON.stringify(styles));
       }
+      localStorage.setItem('themePreference', 'custom');
     } else {
       setStyles(defaultStyles);
+      localStorage.setItem('themePreference', 'default');
     }
     setIsDefaultTheme(!isDefaultTheme);
   };
