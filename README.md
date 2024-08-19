@@ -26,7 +26,6 @@
 	<br>
 	<img src="https://img.shields.io/badge/tsnode-3178C6.svg?style=flat&logo=ts-node&logoColor=white" alt="tsnode">
 	<img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat&logo=TypeScript&logoColor=white" alt="TypeScript">
-	<img src="https://img.shields.io/badge/Socket.io-010101.svg?style=flat&logo=socketdotio&logoColor=white" alt="Socket.io">
 	<img src="https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=JSON&logoColor=white" alt="JSON">
 	<img src="https://img.shields.io/badge/Express-000000.svg?style=flat&logo=Express&logoColor=white" alt="Express">
 </p>
@@ -54,7 +53,6 @@ Custom_Booking is a comprehensive booking management system built with Next.js, 
 - User authentication
 - Booking creation and management
 - Service listing and management
-- Real-time updates using Socket.IO
 - Responsive design with Tailwind CSS
 - Push notification system for style updates
 
