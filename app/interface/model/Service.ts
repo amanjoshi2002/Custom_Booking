@@ -22,3 +22,10 @@ export interface ServiceInput {
 }
 
 export type ServiceWithStringId = Omit<Service, '_id'> & { _id: string };
+
+export interface ServiceSearchParams {
+  category?: string | null;
+  search?: string | null;
+}
+
+export type ServiceClickHandler = (service: ServiceWithStringId) => void;

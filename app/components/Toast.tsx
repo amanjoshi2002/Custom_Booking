@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-interface ToastProps {
-  message: string;
-  type: 'success' | 'error' | 'loading';
-  duration?: number;
-  onClose: () => void;
-}
+import { ToastProps } from '../interface/toast';
 
 const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, onClose }) => {
   const [progress, setProgress] = useState(100);

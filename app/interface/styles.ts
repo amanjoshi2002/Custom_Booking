@@ -26,7 +26,9 @@ export interface StyleType {
 // Define the shape of the context value
 export interface StyleContextType {
   styles: StyleType;
-  setStyles: Dispatch<SetStateAction<StyleType>>;
+  setStyles: (styles: StyleType) => void;
+  isDefaultTheme: boolean;
+  toggleTheme: () => void;
   isLoading: boolean;
 }
 

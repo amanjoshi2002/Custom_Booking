@@ -5,9 +5,7 @@ export const API_ROUTES = {
     SIGNUP: '/api/auth/signup',
     LOGOUT: '/api/auth/logout',
   
-    // User
-    GET_USER_PROFILE: '/api/user/profile',
-    UPDATE_USER_PROFILE: '/api/user/profile',
+ 
   
     // Bookings
     GET_BOOKINGS: '/api/bookings',

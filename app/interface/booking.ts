@@ -28,3 +28,18 @@ export interface BookingUpdateData {
   email?: string;
   dateTime?: string | Date;
 }
+
+export interface BookingFormData {
+  name: string;
+  email: string;
+  date: string;
+  time: string;
+}
+
+export interface BookingSubmission extends BookingFormData {
+  serviceId: string;
+  serviceName: string;
+  cost: number;
+  status: string;
+  dateTime: string;
+}

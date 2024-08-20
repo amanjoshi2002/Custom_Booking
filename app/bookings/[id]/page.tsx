@@ -8,6 +8,7 @@ import Footer from '@/app/components/Footer';
 import Loading from '@/app/components/Loading';
 import { useStyles } from '@/app/contexts/StyleContext';
 import { Booking, BookingUpdateData } from '@/app/interface/booking';
+import { API_ROUTES, PAGE_ROUTES } from '@/app/routes';
 
 export default function BookingDetailPage({ params }: { params: { id: string } }) {
   const { styles } = useStyles();
@@ -63,7 +64,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
 
   const fetchBooking = async () => {
     try {
-      const response = await fetch(`/api/bookings/${params.id}`);
+      const response = await fetch(`${API_ROUTES.GET_BOOKINGS}/${params.id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch booking');
       }
@@ -84,7 +85,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
 
     try {
       console.log('Attempting to cancel booking:', booking._id.toString());
-      const response = await fetch(`/api/bookings/${booking._id.toString()}`, {
+      const response = await fetch(API_ROUTES.UPDATE_BOOKING.replace(':id', booking._id.toString()), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'Cancelled' }),
@@ -119,7 +120,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
     if (!booking) return;
 
     try {
-      const response = await fetch(`/api/bookings/${booking._id.toString()}`, {
+      const response = await fetch(API_ROUTES.UPDATE_BOOKING.replace(':id', booking._id.toString()), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editedBooking),
@@ -182,7 +183,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
     <div className="bg-white">
       <NavBar />
       <div className="container mx-auto mt-8 px-4">
-        <Link href="/bookings" className="text-black hover:underline mb-4 inline-block" style={{ color: styles.textColor }}>&larr; Back to Bookings</Link>
+        <Link href={PAGE_ROUTES.BOOKINGS} className="text-black hover:underline mb-4 inline-block" style={{ color: styles.textColor }}>&larr; Back to Bookings</Link>
         <h1 className={`text-3xl font-bold mb-6 ${styles.textColor}`}>Booking Details</h1>
         <div className="bg-white shadow-md rounded-lg p-6">
           <p className={`text-sm mb-2 ${styles.textColor}`}>Booking ID: {booking._id.toString()}</p>
@@ -195,24 +196,21 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
                 name="name"
                 value={editedBooking.name || ''}
                 onChange={handleInputChange}
-                className="mb-2 p-2 border rounded w-full"
-                style={{ color: styles.textColor }}
+                className="mb-2 p-2 border rounded w-full text-black"
               />
               <input
                 type="email"
                 name="email"
                 value={editedBooking.email || ''}
                 onChange={handleInputChange}
-                className="mb-2 p-2 border rounded w-full"
-                style={{ color: styles.textColor }}
+                className="mb-2 p-2 border rounded w-full text-black"
               />
               <input
                 type="datetime-local"
                 name="dateTime"
                 value={editedBooking.dateTime ? new Date(editedBooking.dateTime).toISOString().slice(0, 16) : ''}
                 onChange={handleInputChange}
-                className="mb-2 p-2 border rounded w-full"
-                style={{ color: styles.textColor }}
+                className="mb-2 p-2 border rounded w-full text-black"
               />
             </>
           ) : (

@@ -3,18 +3,11 @@
 import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { defaultStyles, StyleType } from '../components/DefaultStyle';
 import { useSession } from 'next-auth/react';
-
-interface StyleContextType {
-  styles: StyleType;
-  setStyles: (styles: StyleType) => void;
-  isDefaultTheme: boolean;
-  toggleTheme: () => void;
-  isLoading: boolean;
-}
+import { StyleContextType, StyleProviderProps } from '../interface/styles';
 
 const StyleContext = createContext<StyleContextType | undefined>(undefined);
 
-export function StyleProvider({ children }: { children: React.ReactNode }) {
+export function StyleProvider({ children }: StyleProviderProps) {
   const [styles, setStyles] = useState<StyleType>(defaultStyles);
   const [isDefaultTheme, setIsDefaultTheme] = useState(true);
   const [isLoading, setIsLoading] = useState(true);

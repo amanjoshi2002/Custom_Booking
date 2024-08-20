@@ -7,9 +7,15 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import Loading from '../components/Loading';
 import { useStyles } from '../contexts/StyleContext';
-import { Service, ServiceWithStringId } from '../interface/model/Service';
+import { 
+  Service, 
+  ServiceWithStringId, 
+  ServiceSearchParams, 
+  ServiceClickHandler
+} from '../interface/model/Service';
+import { BookingFormData, BookingSubmission } from '../interface/booking';
 
-interface BookingFormData {
+interface ServicesPage {
   name: string;
   email: string;
   date: string;
@@ -39,27 +45,19 @@ const ServicesPage = () => {
     const fetchServices = async () => {
       setLoading(true);
       setNoResults(false);
-      let url = '/api/services';
-      const params = new URLSearchParams();
-
-      if (category) {
-        params.append('category', category);
-      }
-      if (searchQuery) {
-        params.append('search', searchQuery);
-      }
-
-      if (params.toString()) {
-        url += `?${params.toString()}`;
-      }
+      
+      const options: ServiceSearchParams = {
+        category: category,
+        search: searchQuery
+      };
 
       try {
-        const response = await fetch(url);
+        const response = await fetch('/api/services' + createQueryString(options));
         if (response.ok) {
           const data: Service[] = await response.json();
           const servicesWithStringId: ServiceWithStringId[] = data.map(service => ({
             ...service,
-            _id: service._id ? service._id.toString() : '' // Handle potentially undefined _id
+            _id: service._id ? service._id.toString() : ''
           }));
           setServices(servicesWithStringId);
           setNoResults(servicesWithStringId.length === 0);
@@ -79,7 +77,7 @@ const ServicesPage = () => {
     fetchServices();
   }, [category, searchQuery]);
 
-  const handleServiceClick = (service: ServiceWithStringId) => {
+  const handleServiceClick: ServiceClickHandler = (service) => {
     setSelectedService(service);
   };
 
@@ -103,7 +101,7 @@ const ServicesPage = () => {
     e.preventDefault();
     if (!selectedService) return;
 
-    const booking = {
+    const booking: BookingSubmission = {
       ...bookingFormData,
       serviceId: selectedService._id,
       serviceName: selectedService.name,
@@ -144,6 +142,14 @@ const ServicesPage = () => {
       time: '',
     });
   };
+
+  // Helper function to create query string
+  function createQueryString(params: ServiceSearchParams): string {
+    const searchParams = new URLSearchParams();
+    if (params.category) searchParams.append('category', params.category);
+    if (params.search) searchParams.append('search', params.search);
+    return searchParams.toString() ? `?${searchParams.toString()}` : '';
+  }
 
   return (
     <>
