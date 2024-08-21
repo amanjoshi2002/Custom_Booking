@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import { getCollection } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
@@ -10,29 +10,33 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  // Check if user is authenticated
+  console.log('GET /api/bookings/[id]: Start');
+  console.log('Booking ID:', params.id);
+
   const session = await getServerSession(authOptions);
+  console.log('Session:', session);
+
   if (!session || !session.user) {
+    console.log('Unauthorized access attempt');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    // Connect to MongoDB and fetch the booking
-    const client = await clientPromise;
-    const db = client.db();
-    
-    // Add a null check for session.user.email
-    const userId = session.user.email ?? null;
+    const bookingsCollection = await getCollection('bookings');
+    console.log('Connected to bookings collection');
 
-    const booking = await db.collection<Booking>('bookings').findOne({
-      _id: new ObjectId(params.id),
-      userId: userId
+    const booking = await bookingsCollection.findOne({
+      _id: new ObjectId(params.id)
     });
 
+    console.log('Fetched booking:', booking);
+
     if (!booking) {
+      console.log('Booking not found');
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
+    console.log('GET /api/bookings/[id]: End');
     return NextResponse.json(booking);
   } catch (error) {
     console.error('Error fetching booking:', error);
@@ -53,8 +57,7 @@ export async function PATCH(
 
   try {
     // Connect to MongoDB
-    const client = await clientPromise;
-    const db = client.db();
+    const bookingsCollection = await getCollection('bookings');
     
     // Extract update data from request body
     const { status, name, email, dateTime } = await request.json();
@@ -77,7 +80,7 @@ export async function PATCH(
     const userId = session.user.email ?? null;
 
     // Update the booking
-    const result = await db.collection<Booking>('bookings').findOneAndUpdate(
+    const result = await bookingsCollection.findOneAndUpdate(
       { _id: new ObjectId(params.id), userId: userId },
       { $set: updateData },
       { returnDocument: 'after' }

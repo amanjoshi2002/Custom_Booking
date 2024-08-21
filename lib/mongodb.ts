@@ -7,6 +7,9 @@ if (!process.env.MONGODB_URI) {
 const uri = process.env.MONGODB_URI
 const options = {}
 
+// Define the database name
+export const DB_NAME = 'test'
+
 let client: MongoClient
 let clientPromise: Promise<MongoClient>
 
@@ -27,8 +30,14 @@ if (process.env.NODE_ENV === "development") {
 
 export default clientPromise
 
-// Add this function to get the database
-export async function getDatabase(dbName: string) {
+// Function to get the database
+export async function getDatabase() {
   const client = await clientPromise
-  return client.db(dbName)
+  return client.db(DB_NAME)
+}
+
+// Function to get a specific collection
+export async function getCollection(collectionName: string) {
+  const db = await getDatabase()
+  return db.collection(collectionName)
 }

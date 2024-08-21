@@ -3,7 +3,7 @@ import path from 'path';
 import express from 'express';
 import http from 'http';
 import next from 'next';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import webpush from 'web-push';
 import mongoose, { Document, Model } from 'mongoose';
 import { hash } from 'bcrypt';
@@ -263,6 +263,63 @@ connectToMongoDB().then(({ mongoose, client }) => {
       }
     });
 
+    // PATCH route for updating a booking (including cancellation)
+   // PATCH route for updating a booking (including cancellation)
+app.patch('/api/bookings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    console.log('Attempting to update booking:', id);
+    console.log('Update data:', updateData);
+
+    const result = await bookingsCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    );
+
+    if (!result.value) {
+      console.log('Booking not found');
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    console.log('Booking updated successfully:', result.value);
+
+    // Trigger push notifications for the update
+    const subscriptions = await db.collection('pushSubscriptions').find({}).toArray();
+    for (const subscriptionDoc of subscriptions) {
+      try {
+        const subscription = {
+          endpoint: subscriptionDoc.endpoint,
+          keys: {
+            p256dh: subscriptionDoc.keys.p256dh,
+            auth: subscriptionDoc.keys.auth
+          }
+        };
+
+        await webpush.sendNotification(subscription, JSON.stringify({
+          title: 'Booking Update',
+          body: `Booking status changed to ${result.value.status}`,
+          data: result.value
+        }));
+        console.log('Notification sent successfully to:', subscriptionDoc.endpoint);
+      } catch (error) {
+        if (error instanceof Error && 'statusCode' in error && (error as any).statusCode === 410) {
+          console.log('Removing expired subscription:', subscriptionDoc.endpoint);
+          await db.collection('pushSubscriptions').deleteOne({ endpoint: subscriptionDoc.endpoint });
+        } else {
+          console.error('Error sending push notification:', error);
+        }
+      }
+    }
+
+    res.json(result.value);
+  } catch (error) {
+    console.error('Error updating booking:', error);
+    res.status(500).json({ error: 'Error updating booking', details: (error instanceof Error ? error.message : String(error)) });
+  }
+});
     // Handle all other routes with Next.js
     app.all('*', (req, res) => {
       return handle(req, res);

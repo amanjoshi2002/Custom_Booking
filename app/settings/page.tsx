@@ -7,6 +7,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import { useStyles } from '../contexts/StyleContext';
 import { useSession } from "next-auth/react";
 import { StyleType } from '../interface/styles';
+import { API_ROUTES } from '@/app/routes';
 
 const Form: React.FC = () => {
   const { styles: currentStyles, setStyles } = useStyles();
@@ -45,7 +46,7 @@ const Form: React.FC = () => {
     setIsSubmitting(true);
     try {
         console.log('Saving style:', style);
-        const response = await fetch('/api/saveStyle', { // Ensure this endpoint saves the style
+        const response = await fetch(API_ROUTES.SAVE_STYLE, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

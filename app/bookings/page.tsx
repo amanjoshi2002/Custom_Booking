@@ -10,6 +10,7 @@ import Loading from '../components/Loading';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useStyles } from '../contexts/StyleContext';
 import { Booking } from '@/app/interface/booking';
+import { API_ROUTES, PAGE_ROUTES } from '@/app/routes';
 
 type SortOption = 'dateAsc' | 'dateDesc' | 'costAsc' | 'costDesc';
 
@@ -27,7 +28,7 @@ export default function BookingsPage() {
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/login?callbackUrl=/bookings');
+      router.push(`${PAGE_ROUTES.LOGIN}?callbackUrl=${PAGE_ROUTES.BOOKINGS}`);
     } else if (status === 'authenticated') {
       fetchBookings();
       setupPushNotifications();
@@ -42,7 +43,7 @@ export default function BookingsPage() {
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-          const response = await fetch('/api/vapidPublicKey');
+          const response = await fetch(API_ROUTES.GET_VAPID_PUBLIC_KEY);
           const { publicKey } = await response.json();
 
           const subscription = await registration.pushManager.subscribe({
@@ -50,7 +51,7 @@ export default function BookingsPage() {
             applicationServerKey: publicKey
           });
 
-          await fetch('/api/subscribe', {
+          await fetch(API_ROUTES.SUBSCRIBE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(subscription)
@@ -82,7 +83,7 @@ export default function BookingsPage() {
   const fetchBookings = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/bookings');
+      const response = await fetch(API_ROUTES.GET_BOOKINGS);
       if (!response.ok) {
         throw new Error('Failed to fetch bookings');
       }
@@ -171,7 +172,7 @@ export default function BookingsPage() {
             <ul className="space-y-4">
               {currentBookings.map((booking) => (
                 <li key={booking._id.toString()} className="border p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                  <Link href={`/bookings/${booking._id.toString()}`}>
+                  <Link href={`${PAGE_ROUTES.BOOKINGS}/${booking._id.toString()}`}>
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="text-lg font-semibold text-black">{booking.serviceName}</h3>
@@ -202,8 +203,7 @@ export default function BookingsPage() {
                 <button
                   onClick={() => paginate(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  style={{ color: styles.textColor }}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-black hover:bg-gray-50"
                 >
                   <span className="sr-only">Previous</span>
                   <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
@@ -212,12 +212,11 @@ export default function BookingsPage() {
                   <button
                     key={number}
                     onClick={() => paginate(number)}
-                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium
+                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium text-black
                       ${number === currentPage
-                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                        ? 'z-10 bg-indigo-50 border-indigo-500'
+                        : 'bg-white border-gray-300 hover:bg-gray-50'
                       }`}
-                    style={{ color: number === currentPage ? styles.textColor : styles.textColor }}
                   >
                     {number}
                   </button>
@@ -225,8 +224,7 @@ export default function BookingsPage() {
                 <button
                   onClick={() => paginate(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  style={{ color: styles.textColor }}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-black hover:bg-gray-50"
                 >
                   <span className="sr-only">Next</span>
                   <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />

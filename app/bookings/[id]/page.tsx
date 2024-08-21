@@ -21,6 +21,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
   const router = useRouter();
 
   useEffect(() => {
+    console.log('Fetching booking with ID:', params.id);
     fetchBooking();
     setupPushNotifications();
   }, [params.id]);
@@ -33,7 +34,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
 
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-          const response = await fetch('/api/vapidPublicKey');
+          const response = await fetch(API_ROUTES.GET_VAPID_PUBLIC_KEY);
           const { publicKey } = await response.json();
 
           const subscription = await registration.pushManager.subscribe({
@@ -41,7 +42,7 @@ export default function BookingDetailPage({ params }: { params: { id: string } }
             applicationServerKey: publicKey
           });
 
-          await fetch('/api/subscribe', {
+          await fetch(API_ROUTES.SUBSCRIBE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(subscription)

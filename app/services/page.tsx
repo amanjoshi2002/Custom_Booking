@@ -14,6 +14,7 @@ import {
   ServiceClickHandler
 } from '../interface/model/Service';
 import { BookingFormData, BookingSubmission } from '../interface/booking';
+import { API_ROUTES, PAGE_ROUTES } from '@/app/routes';
 
 interface ServicesPage {
   name: string;
@@ -52,7 +53,7 @@ const ServicesPage = () => {
       };
 
       try {
-        const response = await fetch('/api/services' + createQueryString(options));
+        const response = await fetch(API_ROUTES.GET_SERVICES + createQueryString(options));
         if (response.ok) {
           const data: Service[] = await response.json();
           const servicesWithStringId: ServiceWithStringId[] = data.map(service => ({
@@ -85,7 +86,7 @@ const ServicesPage = () => {
     if (status === 'authenticated') {
       setShowBookingForm(true);
     } else {
-      router.push('/login'); // Redirect to login page if not authenticated
+      router.push(PAGE_ROUTES.LOGIN); // Redirect to login page if not authenticated
     }
   };
 
@@ -111,7 +112,7 @@ const ServicesPage = () => {
     };
 
     try {
-      const response = await fetch('/api/bookings', {
+      const response = await fetch(API_ROUTES.CREATE_BOOKING, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(booking),
@@ -127,7 +128,7 @@ const ServicesPage = () => {
       setBookingFormData({ name: '', email: '', date: '', time: '' });
       setShowBookingForm(false);
       setSelectedService(null);
-      router.push('/bookings');
+      router.push(PAGE_ROUTES.BOOKINGS);
     } catch (error) {
       console.error('Error submitting booking:', error);
       // Here you can add some user feedback, like showing an error message

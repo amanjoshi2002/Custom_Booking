@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/mongodb';
+import { getCollection } from '@/lib/mongodb';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Received booking data:', body);
     
-    const db = await getDatabase('your_database_name');
+    const bookingsCollection = await getCollection('bookings');
     console.log('Connected to database');
     
     const booking = {
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       createdAt: new Date(),
     };
     
-    const result = await db.collection('bookings').insertOne(booking);
+    const result = await bookingsCollection.insertOne(booking);
     console.log('Booking inserted:', result);
     
     console.log('POST /api/bookings: End');
@@ -46,11 +46,11 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Connect to MongoDB
-    const db = await getDatabase('your_database_name');
+    // Connect to MongoDB and get the bookings collection
+    const bookingsCollection = await getCollection('bookings');
     
     // Fetch bookings for the authenticated user
-    const bookings = await db.collection('bookings')
+    const bookings = await bookingsCollection
       .find({ userId: session.user.email })
       .project({
         serviceName: 1,

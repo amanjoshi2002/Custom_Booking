@@ -1,5 +1,4 @@
 import React from 'react';
-import Toast from './Toast';
 
 interface LoadingOverlayProps {
   message: string;
