@@ -115,7 +115,8 @@ Custom_Booking is a comprehensive booking management system built with Next.js, 
     │   │   ├── model
     │   │   │   ├── Service.ts
     │   │   │   └── Style.ts
-    │   │   └── styles.ts
+    │   │   ├── styles.ts
+    │   │   └── toast.ts
     │   ├── layout.tsx
     │   ├── page.tsx
     │   ├── routes.ts
@@ -125,8 +126,6 @@ Custom_Booking is a comprehensive booking management system built with Next.js, 
     │       └── page.tsx
     ├── env.d.ts
     ├── example.env.local
-    ├── generate-vapid-keys.js
-    ├── generateVapidKeys.js
     ├── lib
     │   └── mongodb.ts
     ├── next-env.d.ts
@@ -137,27 +136,6 @@ Custom_Booking is a comprehensive booking management system built with Next.js, 
     ├── public
     │   ├── next.svg
     │   ├── photo
-    │   │   ├── 1.webp
-    │   │   ├── 11.webp
-    │   │   ├── 2.webp
-    │   │   ├── 22.webp
-    │   │   ├── 3.webp
-    │   │   ├── 33.webp
-    │   │   ├── 4.webp
-    │   │   ├── 44.webp
-    │   │   ├── 5.webp
-    │   │   ├── 6.webp
-    │   │   ├── 7.png
-    │   │   ├── 8.png
-    │   │   ├── Repair.webp
-    │   │   ├── ac.jpg
-    │   │   ├── door.svg
-    │   │   ├── fixing.jpg
-    │   │   ├── gardencleaning.jpg
-    │   │   ├── housemaid.avif
-    │   │   ├── massage.jpg
-    │   │   ├── team.webp
-    │   │   └── tvrepair.jpg
     │   ├── service-worker.js
     │   └── vercel.svg
     ├── server.ts
