@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { defaultStyles, StyleType } from '../components/DefaultStyle';
 import { useSession } from 'next-auth/react';
 import { StyleContextType, StyleProviderProps } from '../interface/styles';
@@ -15,42 +15,60 @@ export function StyleProvider({ children }: StyleProviderProps) {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      const savedThemePreference = localStorage.getItem('themePreference');
-      if (savedThemePreference === 'custom') {
-        const savedStyles = localStorage.getItem('userStyles');
-        if (savedStyles) {
-          setStyles(JSON.parse(savedStyles));
-          setIsDefaultTheme(false);
-        }
+      fetchStyles();
+    } else {
+      setStyles(defaultStyles);
+      setIsDefaultTheme(true);
+      setIsLoading(false);
+    }
+  }, [status]);
+
+  const fetchStyles = async () => {
+    try {
+      const response = await fetch('/api/getStyle');
+      if (response.ok) {
+        const customStyles = await response.json();
+        setStyles(customStyles);
+        setIsDefaultTheme(false);
       } else {
-        // If theme preference is 'default' or not set, use default theme
         setStyles(defaultStyles);
         setIsDefaultTheme(true);
       }
+    } catch (error) {
+      console.error('Error fetching styles:', error);
+      setStyles(defaultStyles);
+      setIsDefaultTheme(true);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [status]);
+  };
 
   const toggleTheme = () => {
     if (isDefaultTheme) {
-      const savedStyles = localStorage.getItem('userStyles');
-      if (savedStyles) {
-        setStyles(JSON.parse(savedStyles));
-      } else {
-        localStorage.setItem('userStyles', JSON.stringify(styles));
-      }
-      localStorage.setItem('themePreference', 'custom');
+      fetchStyles();
     } else {
       setStyles(defaultStyles);
-      localStorage.setItem('themePreference', 'default');
+      setIsDefaultTheme(true);
     }
-    setIsDefaultTheme(!isDefaultTheme);
   };
 
-  const updateStyles = (newStyles: StyleType) => {
-    setStyles(newStyles);
-    if (!isDefaultTheme) {
-      localStorage.setItem('userStyles', JSON.stringify(newStyles));
+  const updateStyles = async (newStyles: StyleType) => {
+    try {
+      const response = await fetch('/api/saveStyle', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newStyles),
+      });
+      if (response.ok) {
+        setStyles(newStyles);
+        setIsDefaultTheme(false);
+      } else {
+        console.error('Failed to save styles');
+      }
+    } catch (error) {
+      console.error('Error saving styles:', error);
     }
   };
 

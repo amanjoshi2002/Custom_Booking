@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getDatabase } from '../../../lib/mongodb';
+import { getCollection } from '../../../lib/mongodb';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/options';
 
-export const dynamic = 'force-dynamic'; // Add this line
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
@@ -13,8 +13,7 @@ export async function GET() {
       return NextResponse.json({ message: 'Not authenticated or user ID not available' }, { status: 401 });
     }
 
-    const db = await getDatabase('your_database_name');
-    const stylesCollection = db.collection('styles');
+    const stylesCollection = await getCollection('styles');
 
     const style = await stylesCollection.findOne({ userId: session.user.id });
     
