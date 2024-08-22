@@ -338,10 +338,12 @@ This system enables instant style updates across all
 
 ## 🔐 Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file in the root directory based on the provided `.example.env.local` file. The main variables you need to set are:
 
 - `MONGODB_URI`: Your MongoDB connection string.
 - `NEXTAUTH_SECRET`: A secret key used by NextAuth.js for encryption.
+
+Refer to `.example.env.local` for a complete list of environment variables and their descriptions.
 
 ## 🔒 Security Note
 
